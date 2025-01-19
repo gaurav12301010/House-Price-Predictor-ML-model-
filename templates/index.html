@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .main-card{
+        width: 800px;
+        margin: 60px auto;
+        font-family:Georgia, 'Times New Roman', Times, serif;
+        overflow: auto;
+        border: 10px solid  #235066;
+    }
+    .heading{
+        text-align: center;
+        padding: 20px 20px;
+        background-color:   #235066;
+        font-size: 28px;
+        color: rgb(171, 241, 255);
+    }
+    .sub-heading{
+        font-size: 20px;
+    }
+    .input-field{
+        margin: 20px auto;
+        width: 250px;
+        display: inline-block;
+        text-align: center;
+        color: rgb(30, 81, 91);
+    }
+    input, select{
+        height: 20px;
+        width: 200px;
+        background-color: rgb(252, 252, 252);
+    }
+    .button-cont, .predict-section{
+        padding: 5px 10px;
+        margin: 10px auto;
+        text-align: center;
+    }
+    button{
+        padding: 5px 10px;
+        border: 1px solid #235066;
+        color: rgb(171, 241, 255);
+        background-color: #235066;
+    }
+</style>
+<body>
+    <div class="main-card">
+        <div class="heading">Welcome to Bangalore House Price Predictor<br>
+        <div class="sub-heading">Fill your requirements to predict the house price.</div></div>
+        <div>
+            <form action="" method="post" class="form-section"  accept-charset="UTF-8">
+
+                <div class="input-field">
+                    <div class="input-desc">Select location</div>
+                    <select name="location" id="location">
+                        {% for loc in locations %}
+                            <option value="{{loc}}">{{loc}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                    
+                <div class="input-field">
+                    <div class="input-desc">Select area type</div>
+                    <select name="area" id="area">
+                        {% for area in area %}
+                            <option value="{{area}}">{{area}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="input-field">
+                    <div class="input-desc">Availability</div>
+                    <select name="availability" id="availability">
+                        {% for availability in availability %}
+                            <option value="{{availability}}">{{availability}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="input-field">
+                    <div class="input-desc">Enter BHK</div>
+                    <input type="number" name="bhk" id="bhk" min="1" value="0">
+                </div>
+
+                <div class="input-field">
+                    <div class="input-desc">Enter no of bathrooms</div>
+                    <input type="number" name="bath" id="bath" min="1" value="0">
+                </div>
+
+                <div class="input-field">
+                    <div class="input-desc">Enter total square feet</div>
+                    <input type="number" name="sqft" id="sqft" min="350" value="0">
+                </div>
+                
+                <div class="predict-section" id="predict-section"></div>
+
+                <div class="button-cont">
+                    <button type="submit" onclick="send_data()">Predict</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function from_handler(event){
+            event.preventDefault();
+        }
+        function send_data(){
+            document.querySelector('form').addEventListener('submit', from_handler);
+
+            var fd = new FormData(document.querySelector('form'));
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('POST', '/predict', true);
+            document.getElementById('predict-section').innerHTML='Wait predicting Price...';
+
+            xhr.onreadystatechange= function(){
+                if(xhr.readyState == XMLHttpRequest.DONE){
+                    document.getElementById('predict-section').innerHTML='Predicted price(in Lakhs): ₹' + xhr.responseText;
+                }
+            };
+            
+            xhr.onload = function(){};
+            xhr.send(fd);
+        }
+    </script>
+</body>
+</html>
